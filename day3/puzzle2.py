@@ -1,18 +1,15 @@
-f = open("inputtest")
-
-oxygenCrit = ""
-scrubberCrit = ""
-
-
-lines = f.read().splitlines();
-
-
 def getValsStartingWith(x, vals):
     filteredVals = []
     for val in vals:
         if val.startswith(x):
             filteredVals.append(val)
     return filteredVals
+
+f = open("inputtest")
+lines = f.read().splitlines();
+
+oxygenCrit = ""
+scrubberCrit = ""
 
 ones = 0
 for val in lines:
@@ -60,10 +57,5 @@ oxygen = int(oxygenVals[0], 2)
 scrubber = int(scrubberVals[0], 2)
 
 print(f"OXYGEN: {oxygen} {oxygenVals[0]}")
-
 print(f"SCRUBBER: {scrubber} {scrubberVals[0]}")
-
-# print(f"Gamma: {gammaStr} {gamma}")
-# print(f"Epsilon: {epsilonStr} {epsilon}")
-
 print(f"Life support rating {oxygen * scrubber}")
