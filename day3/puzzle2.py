@@ -1,51 +1,69 @@
-f = open("input")
+f = open("inputtest")
 
-oxygen = ""
-scrubber = ""
+oxygenCrit = ""
+scrubberCrit = ""
 
-length = 0
 
-# Fill initial array
-length = len(f.readline()) - 1
+lines = f.read().splitlines();
 
-ones = [0] * length
 
-values = f.read().splitlines();
+def getValsStartingWith(x, vals):
+    filteredVals = []
+    for val in vals:
+        if val.startswith(x):
+            filteredVals.append(val)
+    return filteredVals
 
-oxygenVals = []
-scrubberVals = []
-for x in range(length + 1):
-    for bits in values:
-        if(bits.startswith(oxygen) or bits.startswith(scrubber))
-            bit = bits[x]
-            if bit == "1":
-                ones[x] += 1
+ones = 0
+for val in lines:
+   if val.startswith("1"): 
+       ones += 1
 
-    if(ones[x] >= length / 2):
-        oxygen += "1"
-        scrubber += "0"
-    else:
-        scrubber += "1"
-        oxygen += "0"
+if(ones >= len(lines) / 2):
+    oxygenCrit += "1"
+    scrubberCrit += "0"
+else:
+    oxygenCrit += "0"
+    scrubberCrit += "1"
 
-for x in ones:
-    if x > length / 2:
-        gammaStr += "1"
-    else:
-        gammaStr += "0"
+oxygenVals = getValsStartingWith(oxygenCrit, lines)
+scrubberVals = getValsStartingWith(scrubberCrit, lines)
 
-epsilonStr = ""
+while len(oxygenVals) > 1 or len(scrubberVals) > 1:
 
-for bit in gammaStr:
-    if bit == "1":
-        epsilonStr += "0"
-    else:
-        epsilonStr += "1"
+    if len(oxygenVals) > 1:
+        ones = 0
+        for val in oxygenVals:
+            if val[len(oxygenCrit)] == "1":
+                ones += 1
+        if ones >= len(oxygenVals) / 2:
+            oxygenCrit += "1"
+        else:
+            oxygenCrit += "0"
 
-gamma = int(gammaStr, 2)
-epsilon = int(epsilonStr, 2)
+        oxygenVals = getValsStartingWith(oxygenCrit, oxygenVals)
+
+    if len(scrubberVals) > 1:
+        ones = 0
+        for val in scrubberVals:
+            if val[len(scrubberCrit)] == "1":
+                ones += 1
+        if ones >= len(scrubberVals) / 2:
+            scrubberCrit += "0"
+        else:
+            scrubberCrit += "1"
+
+        scrubberVals = getValsStartingWith(scrubberCrit, scrubberVals)
+
+
+oxygen = int(oxygenVals[0], 2)
+scrubber = int(scrubberVals[0], 2)
+
+print(f"OXYGEN: {oxygen} {oxygenVals[0]}")
+
+print(f"SCRUBBER: {scrubber} {scrubberVals[0]}")
 
 # print(f"Gamma: {gammaStr} {gamma}")
 # print(f"Epsilon: {epsilonStr} {epsilon}")
 
-print(f"Life support rating")
+print(f"Life support rating {oxygen * scrubber}")
