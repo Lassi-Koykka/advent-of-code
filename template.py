@@ -1,18 +1,33 @@
 import time
 
+test = 1
+
 # Setup here
-f = open("input")
+f = open("inputtest" if test else "input")
 fileContent = f.read()
-fileLines = fileContent.split("\n")
+data = fileContent.strip().split(",")
 
-# START TIME
-startTime = time.time()
+def puzzle1 (input):
+    startTime = time.time()
 
-# Code here
+    # CODE
 
-endTime = time.time()
+    endTime = time.time()
 
-#Print result here
-print()
+    print()
+    print("Took", (endTime - startTime) * 1000000, "us")
 
-print("Took", (endTime - startTime) * 1000000, "us")
+def puzzle2 (input):
+    startTime = time.time()
+
+    # CODE
+
+    endTime = time.time()
+
+    print()
+    print("Took", (endTime - startTime) * 1000000, "us")
+    
+
+# RUN 
+puzzle1(data)
+#puzzle2(data)
