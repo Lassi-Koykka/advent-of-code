@@ -47,19 +47,18 @@ def puzzle1 (input):
         print(f[0], f[1], "\n")
         foldline = int(f[1])
         if(f[0] == "y"):
-            for i in range(1, gridHeight - foldline):
-                lineOne = grid[foldline + i]
+            for i in range(foldline, gridHeight):
+                lineOne = grid[i]
                 lineTwo = grid[foldline - i]
                 newLine = list(lineTwo)
-                for j in range(len(lineTwo)):
+                for j in range(len(lineOne) - 1):
                     if(lineTwo[j] == '*' or lineOne[j] == '*'): 
                         newLine[j] = '*'
-                grid[foldline - i] = ''.join(newLine)
+                grid[foldline - i] = str(newLine)
             grid = grid[:foldline]
 
 
         else:
-            #TODO vertical fold
             print("TODO vertical fold")
 
         for l in grid:
