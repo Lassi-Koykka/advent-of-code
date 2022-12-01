@@ -11,7 +11,7 @@ const sum = (nums: number[]) => {
 }
 
 const num = __filename.split(".")[0]
-const inputFileName = TEST ? num + "-test" : num + ""
+const inputFileName = TEST ? num + "-test.txt" : num + "-input.txt"
 
 const content = readFileSync(inputFileName).toString()
 
