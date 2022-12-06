@@ -7,7 +7,6 @@ const inputFileName = TEST ? num + "-test.txt" : num + "-input.txt"
 
 const content = readFileSync(inputFileName).toString().trimEnd()
 
-// console.log(content)
 let result1 = -1
 for (let i = 3; i < content.length; i++) {
   const slice = content.slice(i - 3, i + 1)
