@@ -1,15 +1,22 @@
 import {readFileSync} from "fs";
 
+import {
+  // copy
+  // matchAll
+  // transpose
+  // Graph
+} from "./utils"
+
 const TEST = true
 
 const num = __filename.split(".")[0]
 const inputFileName = TEST ? num + "-test.txt" : num + "-input.txt"
 
-const transpose = (arr: any[][]) => arr[0].map((_, col) => arr.map(row => row[col]))
-const copy = (val: any) => JSON.parse(JSON.stringify(val))
-const matchAll = (s:string, regex: RegExp) => [...s.matchAll(regex)].map(r => r[1])
-
-
 const content = readFileSync(inputFileName).toString().trimEnd()
 
+let r1 = 0
+let r2 = 0
 console.log(content)
+
+console.log("1:", r1)
+console.log("2:", r2)
