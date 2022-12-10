@@ -4,3 +4,5 @@
 - Python
 - Typescript
 - Go
+- Nim
+- Clojure
