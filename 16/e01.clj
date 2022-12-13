@@ -61,7 +61,7 @@
 
 (let [
       [_ x y _ [x1 y2]] result
-      r1 (+ x y)
-      r2 (+ x1 y2)
+      r1 (+ (abs x) (abs y))
+      r2 (+ (abs x1) (abs y2))
       ] 
   (println (str "1: " r1 "\n2: " r2)))

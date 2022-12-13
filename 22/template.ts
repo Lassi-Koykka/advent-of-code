@@ -1,22 +1,16 @@
-import {readFileSync} from "fs";
+import {log} from "console"
+import { getContent } from "./utils"
 
-import {
-  // copy
-  // matchAll
-  // transpose
-  // Graph
-} from "./utils"
-
+const CREATE_FILES = false
+const DAY = __filename.split(".")[0]
 const TEST = true
 
-const num = __filename.split(".")[0]
-const inputFileName = TEST ? num + "-test.txt" : num + "-input.txt"
+const input = getContent(TEST ? DAY + "-test.txt" : DAY + "-input.txt", CREATE_FILES)
 
-const content = readFileSync(inputFileName).toString().trimEnd()
+const run = (data: string) => {
+  return data
+}
 
-let r1 = 0
-let r2 = 0
-console.log(content)
-
-console.log("1:", r1)
-console.log("2:", r2)
+log()
+log("1:", run(input))
+log("2:", run(input))

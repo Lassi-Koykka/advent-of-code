@@ -1,8 +1,13 @@
+import {readFileSync} from "fs";
 
 
+export const getContent = (filename: string, createFile: boolean = false) => readFileSync(filename, {flag: createFile ? "as+" : undefined}).toString().trimEnd()
 export const copy = (val: any) => JSON.parse(JSON.stringify(val))
 export const transpose = (arr: any[][]) => arr[0].map((_, col) => arr.map(row => row[col]))
 export const matchAll = (s:string, regex: RegExp) => [...s.matchAll(regex)].map(r => r[1])
+export const array = (l: number, initialVal: any) => new Array(l).fill(null).map(() => initialVal)
+export const array2D = (w: number, h: number, initialVal: any) => array(h, array(w, initialVal))
+export const mod = ( a :number, b: number) => ((a%b)+b)%b
 
 export class Graph<T> {
   private _adjList: Map<T, Set<T>>;

@@ -1,0 +1,48 @@
+import {log} from "console"
+import { getContent } from "./utils"
+
+const CREATE_FILE = false
+const DAY = __filename.split(".")[0]
+const TEST = true
+
+const input = getContent(TEST ? DAY + "-test.txt" : DAY + "-input.txt", true)
+
+const CHAR_START = 97
+
+const printGrid = (grid: any[][]) => {
+  log()
+  log(grid.map(r => r.join(",")).join("\n"))
+  log()
+}
+
+const findPos = (num: number, grid: number[][]) => 
+  grid.reduce((prev, r, y) => {
+    const x = r.findIndex(n => n === num) ?? -1
+    return x !== -1 ? [y, x] : prev
+  }, [-1,-1])
+
+const run = (data: string) => {
+  const grid = data.split("\n").map(r => r.split("").map(c => c.charCodeAt(0) - 97));
+  const s = findPos(-14, grid);
+  const e = findPos(-28, grid);
+
+  console.log("STARTPOS", s);
+  console.log("ENDPOS", e);
+
+  const w = grid.length;
+  const h = grid[0].length;
+  let xc = 0;
+  let xy = 0;
+  for (let y = 0; y < h; y++) {
+    for (let x = 0; x < w; x++) {
+
+    }
+  }
+
+  return grid
+}
+
+
+log()
+log("1:", run(input))
+log("2:", run(input))
