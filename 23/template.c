@@ -6,9 +6,9 @@
 #define TEST 1
 #define NUM 01
 
-int part_1(char **lines);
+int part1(char **lines, size_t lineCount);
 
-int part_2(char **lines);
+int part2(char **lines, size_t lineCount);
 
 int main(int argc, char *argv[]) {
   char *template = TEST ? "e%02d-test.txt" : "e%02d-input.txt";

@@ -7,42 +7,63 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define LSIZE 1028
+#define MAX_LINES 10000
+#define LSIZE 512
 
-static inline size_t read_line(char **line, FILE *stream) {
-  char buffer[LSIZE];
-  if (fgets(buffer, sizeof(buffer), stream) == NULL)
-    return -1;
+// FILE READING
+static inline int readLinesFromFile(const char *filename, char ***lines) {
+    FILE *file = fopen(filename, "r");
+    assert(file && "Error opening file");
 
-  unsigned int line_len = strlen(buffer);
+    *lines = (char **)malloc(MAX_LINES * sizeof(char *));
+    assert(*lines && "Memory allocation error");
 
-  // Remove newline
-  char last_char = buffer[line_len - 1];
-  if (last_char == '\n') {
-    last_char = '\0';
-    line_len -= 1;
-  }
-  *line = (char *)malloc(line_len * sizeof(char));
-  strcpy(*line, buffer);
-  return line_len;
+    int lineCount = 0;
+    char buffer[LSIZE];
+
+    while (fgets(buffer, sizeof(buffer), file) != NULL) {
+        // Remove the newline character if present
+        size_t length = strlen(buffer);
+        if (length > 0 && buffer[length - 1] == '\n') {
+            buffer[length - 1] = '\0';
+        }
+        // Copy from buffer to lines
+        (*lines)[lineCount] = (char *)malloc((length + 1) * sizeof(char));
+        assert((*lines)[lineCount] && "Memory allocation error");
+        strcpy((*lines)[lineCount], buffer);
+
+        lineCount++;
+
+        if (lineCount >= MAX_LINES) {
+          fclose(file);
+          assert(1 == 0 && "Max file lines limit reached");
+        }
+    }
+
+    fclose(file);
+    return lineCount;
 }
 
-static inline size_t read_lines(char ***linesPtr, FILE *stream) {
-  char **lines = NULL;
-  char *line = NULL;
-  unsigned int lineCount = 0;
-  size_t lineLen = 0;
-  while ((lineLen = read_line(&line, stream)) != -1) {
-    lines = (char **)realloc(lines, (lineCount + 1) * sizeof(char *));
-    assert(lines != NULL);
-    lines[lineCount] = (char *)malloc((lineLen + 1) * sizeof(char));
-    assert(lines[lineCount] != NULL);
-    strcpy(lines[lineCount], line);
-    lineCount++;
+static inline void freeLines(char **lines, int linesCount) {
+  for (int i = 0; i < linesCount; i++) {
+    free(lines[i]);
   }
+  free(lines);
+}
 
-  *linesPtr = lines;
-  return lineCount;
+// LOGGING
+static inline void printArray(int *a, int len) {
+  printf("[ ");
+  for (int i = 0; i < len; i++)
+    printf("%d, ", a[i]);
+  printf("]\n");
+}
+
+static inline void printCharArray(char *a, int len) {
+  printf("[ ");
+  for (int i = 0; i < len; i++)
+    printf("%c, ", a[i]);
+  printf("]\n");
 }
 
 // MATH
@@ -51,7 +72,6 @@ static inline size_t read_lines(char ***linesPtr, FILE *stream) {
 #define sig(x) (x > 0 ? 1 : x < 0 ? -1 : 0)
 
 // COMPARING
-
 static inline int cmp_int_asc(const void *aPtr, const void *bPtr) {
   int a = *(int *)aPtr;
   int b = *(int *)bPtr;
