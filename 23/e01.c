@@ -3,9 +3,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#define TEST 0
-#define NUM 1
-
+#define NUM "01"
 #define BUFSIZE 1028
 
 #define NUMS_LEN 9
@@ -51,14 +49,13 @@ int parseLines(char **lines, size_t lineCount, int parseStrNums) {
 }
 
 int main(int argc, char *argv[]) {
-  char filename[18];
-  sprintf(filename, TEST ? "e%02d-test-2.txt" : "e%02d-input.txt", NUM);
-
+  char *filename = argc > 1 ? argv[1] : "e" NUM "-input.txt";
   char **lines = NULL;
   int lineCount = readLinesFromFile(filename, &lines);
 
   int result1 = parseLines(lines, lineCount, 0);
   int result2 = parseLines(lines, lineCount, 1);
+  freeLines(lines, lineCount);
 
   printf("PART 1: %d\n", result1);
   printf("PART 2: %d\n", result2);
