@@ -4,51 +4,48 @@ const TEST = 1;
 const DAY = __filename.split(".")[0];
 const CREATE_FILES = 0;
 
-const input = getContent(
-  `${DAY}${TEST ? "-test.txt" : "-input.txt"}`,
-  !!CREATE_FILES
-);
+const filename = DAY + (TEST ? "-test.txt" : "-input.txt");
+const input = getContent(filename, !!CREATE_FILES);
 
 type Dictionary<T> = { [key: string]: T };
 
-const part1 = (data: string) => {
-  const lines = data.split("\n");
+const areAdjacent = (x1: number, y1: number, x2: number, y2: number) =>
+  Math.abs(x1 - x2) < 2 && Math.abs(y1 - y2) < 2;
 
+const part1 = (lines: string[]) => {
   const symbols = lines.reduce((prevSymbols, line, y) => {
-    const newSymbols = [...line].reduce((prev, c, x) => {
-      return !isNumeric(c) && c !== "." ? { ...prev, [`${x}-${y}`]: c } : prev;
-    }, {} as Dictionary<string>);
-    return { ...prevSymbols, ...newSymbols };
-  }, {} as Dictionary<string>);
+    return [...line].reduce((prev, c, x) => {
+      return !isNumeric(c) && c !== "." ? [...prev, `${x}-${y}`] : prev;
+    }, prevSymbols);
+  }, [] as string[]);
 
   const sum = lines.reduce((prevSum, line, y) => {
     const { lineSum } = [...line].reduce(
       (prev, c, x) => {
+        if (!isNumeric(c)) {
+          return prev;
+        }
+
         const { adjacent, numStart, lineSum } = prev;
-        if (isNumeric(c)) {
-          const isAdjacent =
-            adjacent ||
-            Object.keys(symbols).some((sym) => {
-              const [symX, symY] = sym.split("-").map(Number);
-              const deltaX = Math.abs(symX - x);
-              const deltaY = Math.abs(symY - y);
-              return deltaX < 2 && deltaY < 2;
-            });
-          const curNumStart = numStart > -1 ? numStart : x;
-          if (x >= line.length - 1 || !isNumeric(line[x + 1])) {
-            if (!isAdjacent) {
-              return { adjacent: false, numStart: -1, lineSum: lineSum };
-            }
-            const numStr = line.slice(curNumStart, x + 1);
-            return {
-              adjacent: false,
-              numStart: -1,
-              lineSum: lineSum + Number(numStr),
-            };
-          }
+        const isAdjacent =
+          adjacent ||
+          symbols.some((sym) => {
+            const [symX, symY] = sym.split("-").map(Number);
+            return areAdjacent(x, y, symX, symY);
+          });
+
+        const curNumStart = numStart > -1 ? numStart : x;
+
+        if (x < line.length - 1 && isNumeric(line[x + 1])) {
           return { ...prev, adjacent: isAdjacent, numStart: curNumStart };
         }
-        return prev;
+
+        if (!isAdjacent) {
+          return { adjacent: false, numStart: -1, lineSum: lineSum };
+        }
+
+        const num = Number(line.slice(curNumStart, x + 1));
+        return { adjacent: false, numStart: -1, lineSum: lineSum + num };
       },
       { adjacent: false, numStart: -1, lineSum: 0 }
     );
@@ -57,78 +54,58 @@ const part1 = (data: string) => {
   return sum;
 };
 
-const part2 = (data: string) => {
-  const lines = data.split("\n");
-
+const part2 = (lines: string[]) => {
   const gears = lines.reduce((prevSymbols, line, y) => {
-    const newSymbols = [...line].reduce((prev, c, x) => {
+    return [...line].reduce((prev, c, x) => {
       return !isNumeric(c) && c == "*" ? { ...prev, [`${x}-${y}`]: [] } : prev;
-    }, {} as Dictionary<number[]>);
-    return { ...prevSymbols, ...newSymbols };
+    }, prevSymbols);
   }, {} as Dictionary<number[]>);
 
   const newGears = lines.reduce((prevGears, line, y) => {
-    const { lineGearParts } = [...line].reduce(
+    const { lineGears: lineGearParts } = [...line].reduce(
       (prev, c, x) => {
-        const { adjacentGears, numStart, lineGearParts } = prev;
+        const { adjGears, numStart, lineGears } = prev;
 
-        if (isNumeric(c)) {
-          const newAdjacentGears = Object.keys(gears).reduce((prev, sym) => {
-            const [symX, symY] = sym.split("-").map(Number);
-            const deltaX = Math.abs(symX - x);
-            const deltaY = Math.abs(symY - y);
-            return deltaX < 2 && deltaY < 2 && !prev.includes(sym)
-              ? [...prev, sym]
-              : prev;
-          }, adjacentGears);
-
-          const isAdjacent =
-            adjacentGears.length > 0 || newAdjacentGears.length > 0;
-
-          const curNumStart = numStart > -1 ? numStart : x;
-          if (x >= line.length - 1 || !isNumeric(line[x + 1])) {
-            if (!isAdjacent) {
-              return {
-                adjacentGears: [],
-                numStart: -1,
-                lineGearParts,
-              };
-            }
-            const numStr = line.slice(curNumStart, x + 1);
-
-            const newLineGearParts = newAdjacentGears.reduce((prev, cur) => {
-              const prevParts = prev[cur];
-              const newParts = [...prevParts, Number(numStr)];
-              return { ...prev, [cur]: newParts };
-            }, lineGearParts);
-
-            return {
-              adjacentGears: [],
-              numStart: -1,
-              lineGearParts: newLineGearParts,
-            };
-          }
-          return {
-            ...prev,
-            adjacentGears: newAdjacentGears,
-            numStart: curNumStart,
-          };
+        if (!isNumeric(c)) {
+          return prev;
         }
-        return prev;
+
+        const newAdjGears = Object.keys(gears).reduce((prev, sym) => {
+          const [symX, symY] = sym.split("-").map(Number);
+          return areAdjacent(x, y, symX, symY) && !prev.includes(sym)
+            ? [...prev, sym]
+            : prev;
+        }, adjGears);
+
+        const curNumStart = numStart > -1 ? numStart : x;
+
+        if (x < line.length - 1 && isNumeric(line[x + 1])) {
+          return { ...prev, adjGears: newAdjGears, numStart: curNumStart };
+        }
+
+        const isAdjacent = adjGears.length || newAdjGears.length;
+        if (!isAdjacent) {
+          return { adjGears: [], numStart: -1, lineGears: lineGears };
+        }
+
+        const num = Number(line.slice(curNumStart, x + 1));
+        const newLineGearParts = newAdjGears.reduce((prev, g) => {
+          return { ...prev, [g]: [...prev[g], num] };
+        }, lineGears);
+
+        return { adjGears: [], numStart: -1, lineGears: newLineGearParts };
       },
-      {
-        adjacentGears: [] as string[],
-        numStart: -1,
-        lineGearParts: prevGears,
-      }
+      { adjGears: [] as string[], numStart: -1, lineGears: prevGears }
     );
     return lineGearParts;
   }, gears);
+
   const validGears = Object.values(newGears).filter((g) => g.length == 2);
-  const ratioSum = validGears.reduce((prev, [a, b]) => prev + a * b, 0);
-  return ratioSum;
+  return validGears.reduce((prev, [a, b]) => prev + a * b, 0);
 };
 
+const lines = input.split("\n");
+
 console.log();
-console.log("1:", part1(input));
-console.log("2:", part2(input));
+console.log("1:", part1(lines));
+console.log("2:", part2(lines));
