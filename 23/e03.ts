@@ -1,11 +1,9 @@
 import { getContent, isNumeric } from "./utils";
 
 const TEST = 1;
-const DAY = __filename.split(".")[0];
-const CREATE_FILES = 0;
+const filename = __filename.split(".")[0] + (TEST ? "-test.txt" : "-input.txt");
 
-const filename = DAY + (TEST ? "-test.txt" : "-input.txt");
-const input = getContent(filename, !!CREATE_FILES);
+const input = getContent(filename);
 
 type Dictionary<T> = { [key: string]: T };
 
@@ -47,7 +45,7 @@ const part1 = (lines: string[]) => {
         const num = Number(line.slice(curNumStart, x + 1));
         return { adjacent: false, numStart: -1, lineSum: lineSum + num };
       },
-      { adjacent: false, numStart: -1, lineSum: 0 }
+      { adjacent: false, numStart: -1, lineSum: 0 },
     );
     return prevSum + lineSum;
   }, 0);
@@ -55,11 +53,16 @@ const part1 = (lines: string[]) => {
 };
 
 const part2 = (lines: string[]) => {
-  const gears = lines.reduce((prevSymbols, line, y) => {
-    return [...line].reduce((prev, c, x) => {
-      return !isNumeric(c) && c == "*" ? { ...prev, [`${x}-${y}`]: [] } : prev;
-    }, prevSymbols);
-  }, {} as Dictionary<number[]>);
+  const gears = lines.reduce(
+    (prevSymbols, line, y) => {
+      return [...line].reduce((prev, c, x) => {
+        return !isNumeric(c) && c == "*"
+          ? { ...prev, [`${x}-${y}`]: [] }
+          : prev;
+      }, prevSymbols);
+    },
+    {} as Dictionary<number[]>,
+  );
 
   const newGears = lines.reduce((prevGears, line, y) => {
     const { lineGears: lineGearParts } = [...line].reduce(
@@ -95,7 +98,7 @@ const part2 = (lines: string[]) => {
 
         return { adjGears: [], numStart: -1, lineGears: newLineGearParts };
       },
-      { adjGears: [] as string[], numStart: -1, lineGears: prevGears }
+      { adjGears: [] as string[], numStart: -1, lineGears: prevGears },
     );
     return lineGearParts;
   }, gears);

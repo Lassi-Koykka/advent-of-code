@@ -1,16 +1,15 @@
-import {log} from "console"
-import { getContent } from "./utils"
+import { getContent } from "./utils";
 
-const CREATE_FILES = false
-const DAY = __filename.split(".")[0]
-const TEST = true
+const TEST = 1;
+const CREATE_FILES = 0;
+const filename = __filename.split(".")[0] + (TEST ? "-test.txt" : "-input.txt");
 
-const input = getContent(TEST ? DAY + "-test.txt" : DAY + "-input.txt", CREATE_FILES)
+const input = getContent(filename);
 
 const run = (data: string) => {
-  return data
-}
+  return data;
+};
 
-log()
-log("1:", run(input))
-log("2:", run(input))
+console.log();
+console.log("1:", run(input));
+console.log("2:", run(input));
