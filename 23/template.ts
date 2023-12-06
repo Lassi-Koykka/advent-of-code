@@ -1,6 +1,11 @@
 import assert from "assert";
 import { getContent } from "./utils";
 
+const TEST = 1;
+const FILENAME = __filename.split(".")[0] + (TEST ? "-test.txt" : "-input.txt");
+const RESULT_ONE = 0;
+const RESULT_TWO = 0;
+
 const prepareInput = (data: string) => {
   const lines = data.split("\n").map((l) => l.trim());
   return lines;
@@ -13,11 +18,6 @@ const part1 = (data: any) => {
 const part2 = (data: any) => {
   return data;
 };
-
-const TEST = 1;
-const FILENAME = __filename.split(".")[0] + (TEST ? "-test.txt" : "-input.txt");
-const RESULT_ONE = 0;
-const RESULT_TWO = 0;
 
 const input = getContent(FILENAME);
 const data = prepareInput(input);
