@@ -7,8 +7,14 @@ const RESULT_ONE = 0;
 const RESULT_TWO = 0;
 
 const prepareInput = (data: string) => {
-  const lines = data.split("\n").map((l) => l.trim());
-  return lines;
+  const hands = data
+    .split("\n")
+    .map((l) => l.split(" ").map((str, i) => (i === 1 ? Number(str) : str)));
+  return hands;
+};
+
+const rankHand = (str: string) => {
+  const cardCounts = [...str].reduce((curCounts) => {}), {} as { [key: string]: number });
 };
 
 const part1 = (data: any) => {
@@ -24,8 +30,8 @@ const data = prepareInput(input);
 const result1 = part1(data);
 const result2 = part2(data);
 
-TEST && assert.equal(result1, RESULT_ONE, "RESULT 1 INCORRECT");
-TEST && assert.equal(result2, RESULT_TWO, "RESULT 2 INCORRECT");
-
 console.log("1:", result1);
 console.log("2:", result2);
+
+TEST && assert.equal(result1, RESULT_ONE, "RESULT 1 INCORRECT");
+TEST && assert.equal(result2, RESULT_TWO, "RESULT 2 INCORRECT");
